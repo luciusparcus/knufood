@@ -27,7 +27,7 @@ class Menu():
         if type(name) != str:
             raise ValueError
 
-        url = "http://coop.knu.ac.kr/sub03/sub01_01.html?shop_sqno=" + str(self.id[name])
+        url = "https://coop.knu.ac.kr/sub03/sub01_01.html?shop_sqno=" + str(self.id[name])
         self.title = list(pd.read_html(url, match="주간메뉴")[0].columns.values)
 
         try:
