@@ -9,18 +9,24 @@ def parse(target):
     return list(target[0].to_dict().values())
 
 
-class Menu():
+def get_weekday(day):
+    week = ['월', '화', '수', '목', '금', '토', '일']
+    return week[day]
+
+
+class Menu:
     id = {
         "정보센터식당": 35,
         "복지관": 36,
         "카페테리아첨성": 37,
-        "GP감꽃푸드코트": 46,
+        "감꽃푸드코트": 46,
         "복현카페테리아": 79,
         "공학관교직원식당": 85,
         "공학관학생식당": 86
     }
 
-    date = datetime.now(timezone('Asia/Seoul')).strftime('%m월 %d일')
+    date = datetime.now(timezone('Asia/Seoul'))
+    weekday_number = date.weekday()
 
     def __init__(self, name):
         self.name = name
@@ -31,17 +37,17 @@ class Menu():
         self.title = list(pd.read_html(url, match="주간메뉴")[0].columns.values)
 
         try:
-            self.breakfast = self.__tolist(parse(pd.read_html(url, match="조식")))
+            self.breakfast = self.__tolist(parse(pd.read_html(url, match="조식")))[self.weekday_number][1]
         except:
-            self.breakfast = None
+            self.breakfast = "없음"
         try:
-            self.lunch = self.__tolist(parse(pd.read_html(url, match="중식")))
+            self.lunch = self.__tolist(parse(pd.read_html(url, match="중식")))[self.weekday_number][1]
         except:
-            self.lunch = None
+            self.lunch = "없음"
         try:
-            self.dinner = self.__tolist(parse(pd.read_html(url, match="석식")))
+            self.dinner = self.__tolist(parse(pd.read_html(url, match="석식")))[self.weekday_number][1]
         except:
-            self.dinner = None
+            self.dinner = "없음"
 
     def __tolist(self, target):
         ret = []
@@ -62,12 +68,12 @@ class Menu():
         return ret
 
     def show(self):
-        return """{} 오늘의 식단
+        return """{} {} {}요일 식단
 아침: {}
 
 점심: {}
 
-저녁: {}""".format(self.name, self.breakfast, self.lunch, self.dinner)
+저녁: {}""".format(self.name, self.date.strftime('%m월 %d일'), get_weekday(self.weekday_number), self.breakfast, self.lunch, self.dinner)
 
 
 class DormMenu:
@@ -76,7 +82,9 @@ class DormMenu:
         "첨성관": 3,
         "누리관": 4
     }
-    date = datetime.now(timezone('Asia/Seoul')).strftime('%m월 %d일')
+
+    date = datetime.now(timezone('Asia/Seoul'))
+    weekday_number = date.weekday()
 
     def __init__(self, name):
         self.name = name
@@ -92,11 +100,9 @@ class DormMenu:
         self.data = parse(pd.read_html(url, match=name + " 오늘의 식단"))[1]
 
     def show(self):
-        return """{} 오늘의 식단
+        return """{} {} {}요일 식단
 아침: {}
 
 점심: {}
 
-저녁: {}""".format(self.name, self.data[0], self.data[1], self.data[2])
-
-print(Menu("복지관").show())
+저녁: {}""".format(self.name, self.date.strftime('%m월 %d일'), get_weekday(self.weekday_number), self.data[0], self.data[1], self.data[2])
