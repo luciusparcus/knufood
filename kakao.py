@@ -39,6 +39,6 @@ def knufood():
     if command == u"누리관":
         reply = DormMenu(command).show()
     elif command in (u"GP감꽃푸트코드", u"공학관교직원식당", u"공학관학생식당", u"복지관", u"복현카페테리아", u"정보센터식당", u"카페테리아첨성"):
-        reply = Menu(command).show()
+        reply = "기능 있음"
 
     return create_reply(reply)
