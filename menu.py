@@ -48,18 +48,14 @@ class Menu:
             url = "https://coop.knu.ac.kr/sub03/sub01_01.html?shop_sqno=" + str(self.id[name])
             self.data = []
 
-            try:
-                self.data.append(parse(pd.read_html(url, match="조식"))[self.weekday_number][0])
-            except ValueError:
-                self.data.append("없음")
-            try:
-                self.data.append(parse(pd.read_html(url, match="중식"))[self.weekday_number][0])
-            except ValueError:
-                self.data.append("없음")
-            try:
-                self.data.append(parse(pd.read_html(url, match="석식"))[self.weekday_number][0])
-            except ValueError:
-                self.data.append("없음")
+            for i in ("조식", "중식", "석식"):
+                try:
+                    text = parse(pd.read_html(url, match=i))[self.weekday_number][0]
+                    while text[:2] in ("정식", "특식"):
+                        text = text[2:]
+                    self.data.append(text)
+                except ValueError:
+                    self.data.append("없음")
 
     def __repr__(self):
         return """{}
