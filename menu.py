@@ -37,8 +37,6 @@ class Menu:
         if type(name) != str:
             raise ValueError
 
-        print(self.name, self.id[name])
-
         url = "https://coop.knu.ac.kr/sub03/sub01_01.html?shop_sqno=" + str(self.id[name])
         self.title = list(pd.read_html(url, match="주간메뉴")[0].columns.values)
 
@@ -54,6 +52,8 @@ class Menu:
             self.dinner = self.__mkstr(parse(pd.read_html(url, match="석식")))[self.weekday_number]
         except:
             self.dinner = "없음"
+
+        print(self.breakfast, self.lunch, self.dinner)
 
     def show(self):
         return """{} {} {}요일 식단
