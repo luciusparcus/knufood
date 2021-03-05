@@ -51,7 +51,7 @@ class Menu:
             self.data.append("없음")
 
     def __repr__(self):
-        return self.lunch
+        return '\n'.join(self.data)
 #         return """{} {} {}요일 식단
 # 아침: {}
 #
