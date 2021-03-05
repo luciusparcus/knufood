@@ -15,6 +15,8 @@ menus = {
     "정보센터식당": Menu("정보센터식당"),
     "카페테리아첨성": Menu("카페테리아첨성")
 }
+print("Successfully loaded menus...")
+
 
 
 def create_reply(text):
