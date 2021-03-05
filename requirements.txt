@@ -1,4 +1,4 @@
-gnuicorn
+gunicorn
 html5lib
 numpy
 pandas
