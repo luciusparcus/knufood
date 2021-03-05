@@ -37,9 +37,8 @@ def knufood():
     # Set the default reply as unknown
     command = data["userRequest"]["utterance"]
 
-    if command == u"감꽃푸드코트":
-        print(create_reply(Menu(command).show()))
-        return create_reply(Menu(command).show())
+    if command in (u"감꽃푸드코트", u"공학관교직원식당", u"공학관학생식당", u"복지관", u"복현카페테리아", u"정보센터식당", u"카페테리아첨성"):
+        return create_reply(DormMenu("누리관").show())
     if command == u"누리관":
         return create_reply(DormMenu(command).show())
 
