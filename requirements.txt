@@ -2,5 +2,6 @@ flask
 gunicorn
 html5lib
 numpy
+lxml
 pandas
 pytz
