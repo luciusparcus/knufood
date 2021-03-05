@@ -55,7 +55,12 @@ class Menu:
                             text = text[2:]
                     except TypeError:
                         pass
-                    self.data.append(text if text != "nan" else "없음")
+
+                    # Remove nan
+                    if type(text) != str:
+                        raise ValueError
+
+                    self.data.append(text)
                 except ValueError:
                     self.data.append("없음")
 

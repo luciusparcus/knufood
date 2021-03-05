@@ -47,7 +47,6 @@ def knufood():
     except KeyError:
         return create_reply("서비스를 이용하시려먼 먼저 채널을 추가해 주세요.")
 
-    # Set the default reply as unknown
     command = data["userRequest"]["utterance"]
 
     # Synchronise data
