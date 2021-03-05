@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 
 from config import bot_id
-from menu import Menu, DormMenu
+from menu import Menu
 
 app = Flask(__name__)
 
