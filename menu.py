@@ -67,8 +67,8 @@ class Menu():
 
 점심: {}
 
-저녁: {}
-""".format(self.name, self.breakfast, self.lunch, self.dinner)
+저녁: {}""".format(self.name, self.breakfast, self.lunch, self.dinner)
+
 
 class DormMenu:
     id = {
@@ -97,5 +97,6 @@ class DormMenu:
 
 점심: {}
 
-저녁: {}
-""".format(self.name, self.data[0], self.data[1], self.data[2])
+저녁: {}""".format(self.name, self.data[0], self.data[1], self.data[2])
+
+print(Menu("복지관").show())
