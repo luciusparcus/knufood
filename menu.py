@@ -54,9 +54,9 @@ class Menu:
                     try:
                         while text[:2] in ("정식", "특식"):
                             text = text[2:]
-                    except:
+                    except TypeError:
                         pass
-                    self.data.append(text)
+                    self.data.append(text if text != "nan" else "없음")
                 except ValueError:
                     self.data.append("없음")
 
