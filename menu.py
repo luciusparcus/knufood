@@ -3,10 +3,6 @@
 from datetime import datetime
 from pytz import timezone
 import pandas as pd
-import re
-
-# ㄱ~ㅎ, ㅏ~ㅣ, 가~힣
-hangul = re.compile('[^ \u3131-\u3163\uac00-\ud7a3]+')
 
 
 def parse(target):
@@ -56,13 +52,14 @@ class Menu:
         print(self.breakfast, self.lunch, self.dinner)
 
     def show(self):
-        return """{} {} {}요일 식단
-아침: {}
-
-점심: {}
-
-저녁: {}""".format(self.name, self.date.strftime('%m월 %d일'), get_weekday(self.weekday_number), self.breakfast,
-                 self.lunch, self.dinner)
+        return self.lunch
+#         return """{} {} {}요일 식단
+# 아침: {}
+#
+# 점심: {}
+#
+# 저녁: {}""".format(self.name, self.date.strftime('%m월 %d일'), get_weekday(self.weekday_number), self.breakfast,
+#                  self.lunch, self.dinner)
 
     def __mkstr(self, target):
         ret = []
