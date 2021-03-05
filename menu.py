@@ -35,23 +35,22 @@ class Menu:
 
         url = "https://coop.knu.ac.kr/sub03/sub01_01.html?shop_sqno=" + str(self.id[name])
         self.title = list(pd.read_html(url, match="주간메뉴")[0].columns.values)
+        self.data = []
 
         try:
-            self.breakfast = self.__mkstr(parse(pd.read_html(url, match="조식")))[self.weekday_number]
+            self.data.append(self.__mkstr(parse(pd.read_html(url, match="조식")))[self.weekday_number])
         except:
-            self.breakfast = "없음"
+            self.data.append("없음")
         try:
-            self.lunch = self.__mkstr(parse(pd.read_html(url, match="중식")))[self.weekday_number]
+            self.data.append(self.__mkstr(parse(pd.read_html(url, match="중식")))[self.weekday_number])
         except:
-            self.lunch = "없음"
+            self.data.append("없음")
         try:
-            self.dinner = self.__mkstr(parse(pd.read_html(url, match="석식")))[self.weekday_number]
+            self.data.append(self.__mkstr(parse(pd.read_html(url, match="석식")))[self.weekday_number])
         except:
-            self.dinner = "없음"
+            self.data.append("없음")
 
-        print(self.breakfast, self.lunch, self.dinner)
-
-    def show(self):
+    def __repr__(self):
         return self.lunch
 #         return """{} {} {}요일 식단
 # 아침: {}
@@ -103,7 +102,7 @@ class DormMenu:
 
         self.data = parse(pd.read_html(url, match=name + " 오늘의 식단"))[1]
 
-    def show(self):
+    def __repr__(self):
         return """{} {} {}요일 식단
 아침: {}
 
