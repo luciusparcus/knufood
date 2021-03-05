@@ -34,7 +34,7 @@ def knufood():
 
     # Set the default reply as unknown
     command = data["userRequest"]["utterance"]
-    reply = "이해하기 어려워요."
+    reply = "지원되지 않는 기능입니다."
 
     if command == u"누리관":
         reply = DormMenu(command).show()
@@ -44,7 +44,3 @@ def knufood():
         reply = str(menu.breakfast) + '\n' + str(menu.lunch) + '\n' + str(menu.dinner)
 
     return create_reply(reply)
-
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=59382)
