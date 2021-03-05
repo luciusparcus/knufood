@@ -56,8 +56,8 @@ class Menu:
 
 점심: {}
 
-저녁: {}""".format(self.name, self.date.strftime('%m월 %d일'), get_weekday(self.weekday_number), self.breakfast,
-                 self.lunch, self.dinner)
+저녁: {}""".format(self.name, self.date.strftime('%m월 %d일'), get_weekday(self.weekday_number), self.data[0],
+                 self.data[1], self.data[2])
 
     def __mkstr(self, target):
         ret = []
