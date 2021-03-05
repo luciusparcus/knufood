@@ -20,13 +20,13 @@ def get_weekday(day):
 
 class Menu:
     id = {
-        "정보센터식당": 35,
-        "복지관": 36,
-        "카페테리아첨성": 37,
-        "감꽃푸드코트": 46,
-        "복현카페테리아": 79,
-        "공학관교직원식당": 85,
-        "공학관학생식당": 86
+        u"정보센터식당": 35,
+        u"복지관": 36,
+        u"카페테리아첨성": 37,
+        u"감꽃푸드코트": 46,
+        u"복현카페테리아": 79,
+        u"공학관교직원식당": 85,
+        u"공학관학생식당": 86
     }
 
     date = datetime.now(timezone('Asia/Seoul'))
@@ -36,6 +36,8 @@ class Menu:
         self.name = name
         if type(name) != str:
             raise ValueError
+
+        print(self.name, self.id[name])
 
         url = "https://coop.knu.ac.kr/sub03/sub01_01.html?shop_sqno=" + str(self.id[name])
         self.title = list(pd.read_html(url, match="주간메뉴")[0].columns.values)
@@ -52,6 +54,15 @@ class Menu:
             self.dinner = self.__mkstr(parse(pd.read_html(url, match="석식")))[self.weekday_number]
         except:
             self.dinner = "없음"
+
+    def show(self):
+        return """{} {} {}요일 식단
+아침: {}
+
+점심: {}
+
+저녁: {}""".format(self.name, self.date.strftime('%m월 %d일'), get_weekday(self.weekday_number), self.breakfast,
+                 self.lunch, self.dinner)
 
     def __mkstr(self, target):
         ret = []
@@ -70,14 +81,6 @@ class Menu:
             ret.append(text)
 
         return ret
-
-    def show(self):
-        return """{} {} {}요일 식단
-아침: {}
-
-점심: {}
-
-저녁: {}""".format(self.name, self.date.strftime('%m월 %d일'), get_weekday(self.weekday_number), self.breakfast, self.lunch, self.dinner)
 
 
 class DormMenu:
