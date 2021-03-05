@@ -77,7 +77,7 @@ class Menu:
 
 점심: {}
 
-저녁: {}""".format(self.name, self.date.strftime('%m월 %d일'), get_weekday(self.weekday_number), "없음", "없음", "없음")
+저녁: {}""".format(self.name, self.date.strftime('%m월 %d일'), get_weekday(self.weekday_number), self.breakfast, self.lunch, self.dinner)
 
 
 class DormMenu:

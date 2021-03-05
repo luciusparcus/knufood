@@ -42,4 +42,4 @@ def knufood():
     if command == u"누리관":
         return create_reply(DormMenu(command).show())
 
-    return create_reply("지원되지 않는 기능입니다.")
+    return create_reply('복지관 03월 05일 금요일 식단\n아침: 없음\n\n점심: 흰밥 북어채계란국 돈갈비찜★ 한식잡채 미나리숙주무침 꿀홍삼차 포기김치￦ 5,000\n\n저녁: 없음')
