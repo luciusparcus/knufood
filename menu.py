@@ -3,6 +3,10 @@
 from datetime import datetime
 from pytz import timezone
 import pandas as pd
+import re
+
+# ㄱ~ㅎ, ㅏ~ㅣ, 가~힣
+hangul = re.compile('[^ \u3131-\u3163\uac00-\ud7a3]+')
 
 
 def parse(target):
@@ -37,19 +41,19 @@ class Menu:
         self.title = list(pd.read_html(url, match="주간메뉴")[0].columns.values)
 
         try:
-            self.breakfast = self.__tolist(parse(pd.read_html(url, match="조식")))[self.weekday_number][1]
+            self.breakfast = self.__mkstr(parse(pd.read_html(url, match="조식")))[self.weekday_number]
         except:
             self.breakfast = "없음"
         try:
-            self.lunch = self.__tolist(parse(pd.read_html(url, match="중식")))[self.weekday_number][1]
+            self.lunch = self.__mkstr(parse(pd.read_html(url, match="중식")))[self.weekday_number]
         except:
             self.lunch = "없음"
         try:
-            self.dinner = self.__tolist(parse(pd.read_html(url, match="석식")))[self.weekday_number][1]
+            self.dinner = self.__mkstr(parse(pd.read_html(url, match="석식")))[self.weekday_number]
         except:
             self.dinner = "없음"
 
-    def __tolist(self, target):
+    def __mkstr(self, target):
         ret = []
         if self.title[0] == "분류":
             self.title.remove("분류")
@@ -63,7 +67,7 @@ class Menu:
             if text == "nan":
                 text = ""
 
-            ret.append([self.title[i], text])
+            ret.append(text)
 
         return ret
 
@@ -73,7 +77,7 @@ class Menu:
 
 점심: {}
 
-저녁: {}""".format(self.name, self.date.strftime('%m월 %d일'), get_weekday(self.weekday_number), self.breakfast, self.lunch, self.dinner)
+저녁: {}""".format(self.name, self.date.strftime('%m월 %d일'), get_weekday(self.weekday_number), "없음", "없음", "없음")
 
 
 class DormMenu:
