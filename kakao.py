@@ -38,7 +38,7 @@ def knufood():
 
     if command == u"누리관":
         reply = DormMenu(command).show()
-    elif command in (u"감꽃푸드코트", u"공학관교직원식당", u"공학관학생식당", u"복지관", u"복현카페테리아", u"정보센터식당", u"카페테리아첨성"):
+    if command in (u"감꽃푸드코트", u"공학관교직원식당", u"공학관학생식당", u"복지관", u"복현카페테리아", u"정보센터식당", u"카페테리아첨성"):
         reply = Menu(command).show()
         print(reply)
 
