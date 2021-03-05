@@ -61,6 +61,14 @@ class Menu():
 
         return ret
 
+    def show(self):
+        return """{} 오늘의 식단
+아침: {}
+
+점심: {}
+
+저녁: {}
+""".format(self.name, self.breakfast, self.lunch, self.dinner)
 
 class DormMenu:
     id = {
@@ -81,4 +89,13 @@ class DormMenu:
         else:
             url = "https://dorm.knu.ac.kr/_new_ver/newlife/05.php?get_mode=" + str(self.id[name])
 
-        self.data = parse(pd.read_html(url, match=name + " 오늘의 식단"))
+        self.data = parse(pd.read_html(url, match=name + " 오늘의 식단"))[1]
+
+    def show(self):
+        return """{} 오늘의 식단
+아침: {}
+
+점심: {}
+
+저녁: {}
+""".format(self.name, self.data[0], self.data[1], self.data[2])

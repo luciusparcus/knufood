@@ -36,10 +36,10 @@ def knufood():
     command = data["userRequest"]["utterance"]
     reply = "이해하기 어려워요."
 
-    if command == "누리관":
-        reply = str(DormMenu(command).data)
-    elif command in ("GP감꽃푸트코드", "공학관교직원식당", "공학관학생식당",
-                     "복지관", "복현카페테리아", "정보센터식당", "카페테리아첨성"):
+    if command == u"누리관":
+        reply = DormMenu(command).show()
+    elif command in (u"GP감꽃푸트코드", u"공학관교직원식당", u"공학관학생식당",
+                     u"복지관", u"복현카페테리아", u"정보센터식당", u"카페테리아첨성"):
         menu = Menu(command)
         reply = str(menu.breakfast) + '\n' + str(menu.lunch) + '\n' + str(menu.dinner)
 
