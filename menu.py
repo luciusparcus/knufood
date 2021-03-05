@@ -51,15 +51,13 @@ class Menu:
             self.data.append("없음")
 
     def __repr__(self):
-        print("1-", '\n'.join(self.data))
-        return '\n'.join(self.data)
-#         return """{} {} {}요일 식단
-# 아침: {}
-#
-# 점심: {}
-#
-# 저녁: {}""".format(self.name, self.date.strftime('%m월 %d일'), get_weekday(self.weekday_number), self.breakfast,
-#                  self.lunch, self.dinner)
+        return """{} {} {}요일 식단
+아침: {}
+
+점심: {}
+
+저녁: {}""".format(self.name, self.date.strftime('%m월 %d일'), get_weekday(self.weekday_number), self.breakfast,
+                 self.lunch, self.dinner)
 
     def __mkstr(self, target):
         ret = []
@@ -69,7 +67,7 @@ class Menu:
         for i in range(len(self.title)):
             text = str(list(target[i].values())[0])
 
-            while text[:2] == "정식":
+            while text[:2] in ("정식", "특식"):
                 text = text[2:]
 
             if text == "nan":
