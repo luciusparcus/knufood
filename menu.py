@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-from pytz import timezone
 import pandas as pd
 
 
@@ -29,7 +28,7 @@ class Menu:
         "공학관학생식당": 86
     }
 
-    date = datetime.now(timezone('Asia/Seoul'))
+    date = datetime.now()
     weekday_number = date.weekday()
 
     def __init__(self, name):
@@ -71,4 +70,4 @@ class Menu:
 저녁: {}""".format(self.name, self.date.strftime('%m월 %d일'), get_weekday(self.weekday_number), self.data[0], self.data[1], self.data[2])
 
     def is_expired(self):
-        return self.date.date() < datetime.now(timezone('Asia/Seoul')).date()
+        return self.date.date() < datetime.now().date()
