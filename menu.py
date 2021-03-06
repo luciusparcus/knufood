@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 import dateutil.parser
 import json
 import os
 import pandas as pd
+import bs4
+import requests
 # import shutil
 
 
@@ -22,19 +24,22 @@ def makedir():
 def parse(target):
     return list(target[0].to_dict().values())
 
+def is_dormitory(name):
+    return name in ("문화관", "첨성관", "누리관", "상주생활관")
 
-def get_day(weekday):
+
+def get_day(weekday, strftime=True):
     now = datetime.now()
     current = now.weekday()
 
     if weekday == current:
-        return now.strftime('%m월 %d일')
+        return now.strftime('%m월 %d일') if strftime else now
     elif weekday < current:
         date = now - timedelta(days=(current - weekday))
-        return date.strftime('%m월 %d일')
+        return date.strftime('%m월 %d일') if strftime else date
     elif weekday > current:
         date = now + timedelta(days=(weekday - current))
-        return date.strftime('%m월 %d일')
+        return date.strftime('%m월 %d일') if strftime else date
 
 
 def get_weekday(day):
@@ -87,16 +92,70 @@ class Menu:
         else:
             self.date = date
             self.weekday_number = self.date.weekday()
+            self.data = []
 
-            if name == "상주생활관":
-                url = "https://dorm.knu.ac.kr/scdorm/_new_ver/newlife/05.php" + str(self.id[name])
-                self.data = list(parse(pd.read_html(url, match=name + " 오늘의 식단"))[1].values())
-            elif name in ("문화관", "첨성관", "누리관"):
-                url = "https://dorm.knu.ac.kr/_new_ver/newlife/05.php?get_mode=" + str(self.id[name])
-                self.data = list(parse(pd.read_html(url, match=name + " 오늘의 식단"))[1].values())
+            if is_dormitory(name):
+                if name == "상주생활관":
+                    url = "https://dorm.knu.ac.kr/scdorm/_new_ver/newlife/05.php"
+                else:
+                    url = "https://dorm.knu.ac.kr/_new_ver/newlife/05.php?get_mode=" + str(self.id[name])
+
+                page = requests.get(url).content
+                soup = bs4.BeautifulSoup(page, 'lxml')
+
+                data_date = []
+                data_all = []
+
+                # Retrieve all menus
+                for i in soup.find_all("div", {"id": "menu_boxa"}):
+                    menus = []
+                    ignore = []
+                    day = []
+
+                    for menu in i.get_text().split('\n'):
+                        if menu not in ('', '\r', '\t', "아침메뉴", "점심메뉴", "저녁메뉴", "CLOSE "):
+                            menus.append(menu.lstrip(' ').rstrip('\r').rstrip('\t'))
+
+                    for j in range(len(menus)):
+                        # If j is date
+                        if "식단표" in str(menus[j]):
+                            data_date.append(datetime.strptime(menus[j], "%Y년 %m월 %d일 식단표"))
+                        elif j not in ignore:
+                            # If the menu starts with A, merge it with the following components
+                            if menus[j][:1] == 'A':
+                                cnt = j + 1
+                                items = menus[j] + " / " + menus[j + 1]
+                                items_to_ignore = [j + 1]
+
+                                # Removes '※ A 혹은 B 중 선택1가지만...'
+                                if '※' in menus[j + 2]:
+                                    items_to_ignore.append(j + 2)
+                                # Removes '품절될 수 있습니다'
+                                if "있습니다" in menus[j + 3]:
+                                    items_to_ignore.append(j + 3)
+
+                                day.append(items)
+                                ignore.extend(items_to_ignore)
+                            else:
+                                day.append(menus[j])
+
+                            if len(day) >= 3:
+                                data_all.append(day)
+                                day = []
+
+                # Parse the current week
+                monday = get_day(0, strftime=False)
+
+                for day in data_date:
+                    if day.year == monday.year and day.month == monday.month and day.day == monday.day:
+                        idx_monday = data_date.index(day)
+                        for idx in range(idx_monday, idx_monday + 7):
+                            try:
+                                self.data.append(data_all[idx])
+                            except:
+                                self.data.append(("없음", "없음", "없음"))
             else:
                 url = "https://coop.knu.ac.kr/sub03/sub01_01.html?shop_sqno=" + str(self.id[name])
-                self.data = []
 
                 for i in ("조식", "중식", "석식"):
                     data_day = []
@@ -135,15 +194,14 @@ class Menu:
 
     def show(self, weekday):
         try:
-            menu = (self.data[0][weekday], self.data[1][weekday], self.data[2][weekday])
+            if is_dormitory(self.name):
+                menu = (self.data[weekday][0], self.data[weekday][1], self.data[weekday][2])
+            else:
+                menu = (self.data[0][weekday], self.data[1][weekday], self.data[2][weekday])
         except:
             menu = ("없음", "없음", "없음")
 
-        return """!!요일 선택 기능 개발 중!!
-일부 응답이 불안정하거나 요청이 거부될 수 있습니다. 불편을 드려 죄송합니다.
-(1시간 정도 소요됨)
-
-{}
+        return """{}
 {} {}요일
 
 아침: {}

@@ -75,21 +75,17 @@ def knufood():
     # Set command to command[0]
     cmd = command_split[0]
 
-    if cmd not in ("누리관", "감꽃푸드코트", "공학관교직원식당", "공학관학생식당",
+    if cmd in ("누리관", "감꽃푸드코트", "공학관교직원식당", "공학관학생식당",
                    "복지관", "복현카페테리아", "정보센터식당", "카페테리아첨성"):
-        return create_reply("잘못된 명령입니다.\n\n"
-                            "만약 올바른 명령을 입력하셨다면, 시스템 문제일 가능성이 있으므로 잠시 동안 기다렸다가 다시 시도해주세요.\n"
-                            "만일 몇 시간 후에도 동일 증상이 발생하는 경우 개발자에게 연락하세요.")
+        # If the user specified the day of the week, set the weekday to it
+        week = ['월', '화', '수', '목', '금', '토', '일']
+        if len(command_split) != 1 and command_split[1] in week:
+            weekday = week.index(command_split[1])
+        else:
+            weekday = datetime.now().weekday()
 
-    # If the user specified the day of the week, set the weekday to it
-    week = ['월', '화', '수', '목', '금', '토', '일']
-    if len(command_split) != 1 and command_split[1] in week:
-        weekday = week.index(command_split[1])
-    else:
-        weekday = datetime.now().weekday()
+        # Synchronise data
+        if menus[cmd].is_expired():
+            menus[cmd] = Menu(cmd)
 
-    # Synchronise data
-    if menus[cmd].is_expired():
-        menus[cmd] = Menu(cmd)
-
-    return create_reply(cmd, menus[cmd].show(weekday), weekday)
+        return create_reply(cmd, menus[cmd].show(weekday), weekday)
