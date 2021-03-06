@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from config import bot_id
-from menu import Menu, get_available_menus, synchronise_menus
+from menu import Menu, get_available_menus
 
 from flask import Flask, request, jsonify
 app = Flask(__name__)
@@ -13,6 +13,14 @@ from threading import Timer
 print("Loading menus...")
 menus = get_available_menus()
 print("Successfully loaded the menus")
+
+
+def synchronise_menus():
+    global menus
+
+    print("Synchronising menus...")
+    menus = get_available_menus(reload=True)
+
 
 # Synchronise data every day at 00:00
 x = datetime.today()

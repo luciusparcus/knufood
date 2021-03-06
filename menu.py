@@ -43,10 +43,6 @@ def get_available_menus(reload=False):
     }
 
 
-def synchronise_menus():
-    print("Synchronising menus...")
-    return get_available_menus(reload=True)
-
 
 class Menu:
     id = {
