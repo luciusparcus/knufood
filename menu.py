@@ -146,7 +146,7 @@ class Menu:
 점심: {}
 
 저녁: {}""".format(self.name, get_day(weekday), get_weekday(weekday),
-                 self.data[0][weekday], self.data[1][weekday], self.datax[2][weekday])
+                 self.data[0][weekday], self.data[1][weekday], self.data[2][weekday])
 
     def is_expired(self):
         return self.date.date() < datetime.now().date()
