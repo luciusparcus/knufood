@@ -6,3 +6,4 @@ numpy
 lxml
 pandas
 python-dateutil
+requests
