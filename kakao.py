@@ -54,6 +54,6 @@ def knufood():
 
     # Synchronise data
     if menus[command].is_expired():
-        menus[command] = Menu(command, force_retrieve=True, force_dump=True)
+        menus[command] = Menu(command)
 
     return create_reply(menus[command])
