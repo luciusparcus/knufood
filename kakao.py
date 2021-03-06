@@ -10,9 +10,6 @@ from datetime import datetime, timedelta
 from threading import Timer
 
 
-# Make the menu directory if it does not exist
-makedir()
-
 print("Loading menus...")
 menus = get_available_menus()
 print("Successfully loaded the menus")

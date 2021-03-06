@@ -11,8 +11,8 @@ import shutil
 # Create menu directory
 def makedir():
     try:
-        os.makedirs("menu")
-    except FileExistsError:
+        os.mkdir("menu")
+    except:
         print("The menu directory already exists.")
 
 
@@ -132,3 +132,5 @@ class Menu:
     def dump(self):
         with open(self.json_path, 'w') as f:
             json.dump(self.dumps(), f)
+
+makedir()

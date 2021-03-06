@@ -4,9 +4,10 @@ import json
 import os
 
 # Import configuration
-if not os.getenv("DYNO", None):
+if os.getenv("DYNO", None):
+    if os.getenv("BOT_ID", None)
+        bot_id = os.getenv("BOT_ID")
+else:
     with open("config.json") as f:
         data = json.load(f)
-
-# Configure BOT_ID
-bot_id = os.getenv("BOT_ID") if os.getenv("BOT_ID", None) else data["botId"]
+        bot_id = data["botId"]
