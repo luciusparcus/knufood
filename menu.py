@@ -50,18 +50,15 @@ class Menu:
             for i in ("조식", "중식", "석식"):
                 try:
                     text = parse(pd.read_html(url, match=i))[self.weekday_number][0]
-                    try:
-                        while text[:2] in ("정식", "특식"):
-                            text = text[2:]
-                    except TypeError:
-                        pass
+                    while text[:2] in ("정식", "특식"):
+                        text = text[2:]
 
                     # Remove nan
                     if type(text) != str:
                         raise ValueError
 
                     self.data.append(text)
-                except ValueError:
+                except:
                     self.data.append("없음")
 
     def __repr__(self):
