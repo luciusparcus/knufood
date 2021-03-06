@@ -134,6 +134,11 @@ class Menu:
                 self.dump()
 
     def show(self, weekday):
+        try:
+            menu = (self.data[0][weekday], self.data[1][weekday], self.data[2][weekday])
+        except:
+            menu = ("없음", "없음", "없음")
+
         return """!!요일 선택 기능 개발 중!!
 일부 응답이 불안정하거나 요청이 거부될 수 있습니다. 불편을 드려 죄송합니다.
 (1시간 정도 소요됨)
@@ -145,8 +150,7 @@ class Menu:
 
 점심: {}
 
-저녁: {}""".format(self.name, get_day(weekday), get_weekday(weekday),
-                 self.data[0][weekday], self.data[1][weekday], self.data[2][weekday])
+저녁: {}""".format(self.name, get_day(weekday), get_weekday(weekday), menu[0], menu[1], menu[2])
 
     def is_expired(self):
         return self.date.date() < datetime.now().date()
