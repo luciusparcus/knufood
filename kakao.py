@@ -67,7 +67,7 @@ def knufood():
     try:
         data["userRequest"]["user"]["properties"]["isFriend"]
     except KeyError:
-        return create_reply("서비스를 이용하시려먼 먼저 채널을 추가해 주세요.")
+        return create_reply("서비스를 이용하시려면 먼저 채널을 추가해 주세요.")
 
     command = data["userRequest"]["utterance"]
     command_split = command.split()
