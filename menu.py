@@ -10,8 +10,10 @@ import shutil
 
 # Create menu directory
 def makedir():
-    if not os.path.exists("menu"):
+    try:
         os.makedirs("menu")
+    except FileExistsError:
+        print("The menu directory already exists.")
 
 
 def parse(target):
