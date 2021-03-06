@@ -32,13 +32,13 @@ print("Timer set to synchronise data every day at 00:00")
 
 def create_reply(text, weekday=datetime.now().weekday()):
     quick_replies = [
-                        {"label": "월", "action": "message", "messageText": "월"},
-                        {"label": "화", "action": "message", "messageText": "화"},
-                        {"label": "수", "action": "message", "messageText": "수"},
-                        {"label": "목", "action": "message", "messageText": "목"},
-                        {"label": "금", "action": "message", "messageText": "금"},
-                        {"label": "토", "action": "message", "messageText": "토"},
-                        {"label": "일", "action": "message", "messageText": "일"}
+                        {"label": "월", "action": "message", "messageText": text + " 월"},
+                        {"label": "화", "action": "message", "messageText": text + " 화"},
+                        {"label": "수", "action": "message", "messageText": text + " 수"},
+                        {"label": "목", "action": "message", "messageText": text + " 목"},
+                        {"label": "금", "action": "message", "messageText": text + " 금"},
+                        {"label": "토", "action": "message", "messageText": text + " 토"},
+                        {"label": "일", "action": "message", "messageText": text + " 일"}
                     ]
 
     for i in quick_replies:
