@@ -30,15 +30,15 @@ t.start()
 print("Timer set to synchronise data every day at 00:00")
 
 
-def create_reply(text, weekday=datetime.now().weekday()):
+def create_reply(name, text, weekday=datetime.now().weekday()):
     quick_replies = [
-                        {"label": "월", "action": "message", "messageText": text + " 월"},
-                        {"label": "화", "action": "message", "messageText": text + " 화"},
-                        {"label": "수", "action": "message", "messageText": text + " 수"},
-                        {"label": "목", "action": "message", "messageText": text + " 목"},
-                        {"label": "금", "action": "message", "messageText": text + " 금"},
-                        {"label": "토", "action": "message", "messageText": text + " 토"},
-                        {"label": "일", "action": "message", "messageText": text + " 일"}
+                        {"label": "월", "action": "message", "messageText": name + " 월"},
+                        {"label": "화", "action": "message", "messageText": name + " 화"},
+                        {"label": "수", "action": "message", "messageText": name + " 수"},
+                        {"label": "목", "action": "message", "messageText": name + " 목"},
+                        {"label": "금", "action": "message", "messageText": name + " 금"},
+                        {"label": "토", "action": "message", "messageText": name + " 토"},
+                        {"label": "일", "action": "message", "messageText": name + " 일"}
                     ]
 
     for i in quick_replies:
@@ -75,4 +75,4 @@ def knufood():
     if menus[command].is_expired():
         menus[command] = Menu(command)
 
-    return create_reply(menus[command].show(), menus[command].weekday_number)
+    return create_reply(command, menus[command].show(), menus[command].weekday_number)
