@@ -63,7 +63,7 @@ class Menu:
         "공학관학생식당": 86
     }
 
-    def __init__(self, name, date=datetime.now(), force_retrieve=True, force_dump=True):
+    def __init__(self, name, date=datetime.now(), force_retrieve=True, force_dump=False):
         self.name = name
         if type(name) != str:
             raise ValueError
