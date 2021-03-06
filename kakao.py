@@ -4,11 +4,11 @@ from config import bot_id
 from menu import Menu, get_available_menus, get_weekday
 
 from flask import Flask, request, jsonify
+
 app = Flask(__name__)
 
 from datetime import datetime, timedelta
 from threading import Timer
-
 
 print("Loading menus...")
 menus = get_available_menus()
@@ -25,21 +25,21 @@ def synchronise_menus():
 # Synchronise data every day at 00:00
 x = datetime.today()
 y = x.replace(day=x.day, hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
-t = Timer((y-x).total_seconds(), synchronise_menus)
+t = Timer((y - x).total_seconds(), synchronise_menus)
 t.start()
 print("Timer set to synchronise data every day at 00:00")
 
 
 def create_reply(name, text, weekday=datetime.now().weekday()):
     quick_replies = [
-                        {"label": "월", "action": "message", "messageText": name + " 월"},
-                        {"label": "화", "action": "message", "messageText": name + " 화"},
-                        {"label": "수", "action": "message", "messageText": name + " 수"},
-                        {"label": "목", "action": "message", "messageText": name + " 목"},
-                        {"label": "금", "action": "message", "messageText": name + " 금"},
-                        {"label": "토", "action": "message", "messageText": name + " 토"},
-                        {"label": "일", "action": "message", "messageText": name + " 일"}
-                    ]
+        {"label": "월", "action": "message", "messageText": name + " 월"},
+        {"label": "화", "action": "message", "messageText": name + " 화"},
+        {"label": "수", "action": "message", "messageText": name + " 수"},
+        {"label": "목", "action": "message", "messageText": name + " 목"},
+        {"label": "금", "action": "message", "messageText": name + " 금"},
+        {"label": "토", "action": "message", "messageText": name + " 토"},
+        {"label": "일", "action": "message", "messageText": name + " 일"}
+    ]
 
     for i in quick_replies:
         if i["label"] == get_weekday(weekday):
@@ -70,9 +70,17 @@ def knufood():
         return create_reply("서비스를 이용하시려먼 먼저 채널을 추가해 주세요.")
 
     command = data["userRequest"]["utterance"]
+    command_split = command.split()
+
+    # If the user specified the day of the week, set the weekday to it
+    week = ['월', '화', '수', '목', '금', '토', '일']
+    if len(command_split) != 1 and command_split[1] in week:
+        weekday = week.index(command_split[1])
+    else:
+        weekday = datetime.now().weekday()
 
     # Synchronise data
     if menus[command].is_expired():
         menus[command] = Menu(command)
 
-    return create_reply(command, menus[command].show(), menus[command].weekday_number)
+    return create_reply(command, menus[command].show(weekday), menus[command].weekday_number)

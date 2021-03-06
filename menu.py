@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import dateutil.parser
 import json
 import os
 import pandas as pd
-import shutil
+# import shutil
 
 
 # Create menu directory
@@ -15,12 +15,26 @@ def makedir():
     except:
         print("The menu directory already exists.")
 
-# Create menu directory
-makedir()
+# # Create menu directory
+# makedir()
 
 
 def parse(target):
     return list(target[0].to_dict().values())
+
+
+def get_day(weekday):
+    now = datetime.now()
+    current = now.weekday()
+
+    if weekday == current:
+        return now.strftime('%m월 %d일')
+    elif weekday < current:
+        date = now - timedelta(days=(current - weekday))
+        return date.strftime('%m월 %d일')
+    elif weekday > current:
+        date = now + timedelta(days=(weekday - current))
+        return date.strftime('%m월 %d일')
 
 
 def get_weekday(day):
@@ -29,8 +43,8 @@ def get_weekday(day):
 
 
 def get_available_menus(reload=False):
-    if reload:
-        shutil.rmtree("menu")
+    # if reload:
+    #     shutil.rmtree("menu")
     return {
         "누리관": Menu("누리관"),
         "감꽃푸드코트": Menu("감꽃푸드코트"),
@@ -59,6 +73,8 @@ class Menu:
     }
 
     def __init__(self, name, date=datetime.now(), force_retrieve=True, force_dump=False):
+        print("Creating the Menu object for {}...".format(name))
+
         self.name = name
         if type(name) != str:
             raise ValueError
@@ -83,29 +99,41 @@ class Menu:
                 self.data = []
 
                 for i in ("조식", "중식", "석식"):
+                    data_day = []
                     try:
                         self.data_week = parse(pd.read_html(url, match=i))
-                        data_raw = self.data_week[self.weekday_number]
+                        for data_raw in self.data_week:
+                            try:
+                                for j in data_raw:
+                                    text = data_raw[j]
 
-                        for j in data_raw:
-                            text = data_raw[j]
-                            while text[:2] in ("정식", "특식"):
-                                text = text[2:]
+                                    # Remove titles
+                                    while text[:2] in ("정식", "특식"):
+                                        text = text[2:]
 
-                            # Remove nan
-                            if type(text) != str:
-                                raise ValueError
-                            # Remove blank strings
-                            if text.strip():
-                                self.data.append(text)
+                                    # Remove nan
+                                    if type(text) != str:
+                                        raise ValueError
+                                    # Remove blank strings
+                                    if text.strip():
+                                        data_day.append(text)
+                            except:
+                                data_day.append("없음")
+                        # Add sunday
+                        data_day.append("없음")
                     except:
-                        self.data.append("없음")
+                        # Make the entire week NaN
+                        for i in range(7):
+                            data_day.append("없음")
+
+                    # Add the menu of the day to the menus of the week
+                    self.data.append(data_day)
 
             # Save data
             if force_dump:
                 self.dump()
 
-    def show(self, day=datetime.today()):
+    def show(self, weekday):
         return """!!요일 선택 기능 개발 중!!
 일부 응답이 불안정하거나 요청이 거부될 수 있습니다. 불편을 드려 죄송합니다.
 (1시간 정도 소요됨)
@@ -117,9 +145,8 @@ class Menu:
 
 점심: {}
 
-저녁: {}""".format(self.name, self.date.strftime('%m월 %d일'),
-                 get_weekday(self.weekday_number),
-                 self.data[0], self.data[1], self.data[2])
+저녁: {}""".format(self.name, get_day(weekday), get_weekday(weekday),
+                 self.data[weekday][0], self.data[weekday][1], self.data[weekday][2])
 
     def is_expired(self):
         return self.date.date() < datetime.now().date()
