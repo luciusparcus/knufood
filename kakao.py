@@ -1,22 +1,23 @@
+# -*- coding: utf-8 -*-
+
 from config import bot_id
-from menu import Menu
+from menu import Menu, get_available_menus, synchronise_menus
 
 from flask import Flask, request, jsonify
 app = Flask(__name__)
 
-print("Loading menus...")
-menus = {
-    "누리관": Menu("누리관"),
-    "감꽃푸드코트": Menu("감꽃푸드코트"),
-    "공학관교직원식당": Menu("공학관교직원식당"),
-    "공학관학생식당": Menu("공학관학생식당"),
-    "복지관": Menu("복지관"),
-    "복현카페테리아": Menu("복현카페테리아"),
-    "정보센터식당": Menu("정보센터식당"),
-    "카페테리아첨성": Menu("카페테리아첨성")
-}
-print("Successfully loaded menus")
+from datetime import datetime, timedelta
+from threading import Timer
 
+print("Loading menus...")
+menus = get_available_menus()
+print("Successfully loaded the menus")
+
+# Synchronise data every day at 00:00
+x = datetime.today()
+y = x.replace(day=x.day, hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
+t = Timer((y-x).total_seconds(), synchronise_menus)
+t.start()
 
 
 def create_reply(text):
@@ -51,8 +52,6 @@ def knufood():
 
     # Synchronise data
     if menus[command].is_expired():
-        menus[command] = Menu(command)
+        menus[command] = Menu(command, force_retrieve=True, force_dump=True)
 
     return create_reply(menus[command])
-
-

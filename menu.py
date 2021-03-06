@@ -1,7 +1,17 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
+import dateutil.parser
+import json
+import os
 import pandas as pd
+import shutil
+
+
+# Create menu directory
+def makedir():
+    if not os.path.exists("menu"):
+        os.makedirs("menu")
 
 
 def parse(target):
@@ -11,6 +21,26 @@ def parse(target):
 def get_weekday(day):
     week = ['월', '화', '수', '목', '금', '토', '일']
     return week[day]
+
+
+def get_available_menus(reload=False):
+    if reload:
+        shutil.rmtree("menu")
+    return {
+        "누리관": Menu("누리관"),
+        "감꽃푸드코트": Menu("감꽃푸드코트"),
+        "공학관교직원식당": Menu("공학관교직원식당"),
+        "공학관학생식당": Menu("공학관학생식당"),
+        "복지관": Menu("복지관"),
+        "복현카페테리아": Menu("복현카페테리아"),
+        "정보센터식당": Menu("정보센터식당"),
+        "카페테리아첨성": Menu("카페테리아첨성")
+    }
+
+
+def synchronise_menus():
+    print("Synchronising menus...")
+    return get_available_menus(reload=True)
 
 
 class Menu:
@@ -28,38 +58,47 @@ class Menu:
         "공학관학생식당": 86
     }
 
-    date = datetime.now()
-    weekday_number = date.weekday()
-
-    def __init__(self, name):
+    def __init__(self, name, force_retrieve=False, force_dump=True):
         self.name = name
-
         if type(name) != str:
             raise ValueError
 
-        if name == "상주생활관":
-            url = "https://dorm.knu.ac.kr/scdorm/_new_ver/newlife/05.php" + str(self.id[name])
-            self.data = parse(pd.read_html(url, match=name + " 오늘의 식단"))[1]
-        elif name in ("문화관", "첨성관", "누리관"):
-            url = "https://dorm.knu.ac.kr/_new_ver/newlife/05.php?get_mode=" + str(self.id[name])
-            self.data = parse(pd.read_html(url, match=name + " 오늘의 식단"))[1]
+        self.json_path = "menu/" + name + ".json"
+
+        # Try to restore the stored menu
+        if not force_retrieve and os.path.isfile(self.json_path):
+            self.date, self.weekday_number, self.data = self.load()
         else:
-            url = "https://coop.knu.ac.kr/sub03/sub01_01.html?shop_sqno=" + str(self.id[name])
-            self.data = []
+            self.date = datetime.now()
+            self.weekday_number = self.date.weekday()
 
-            for i in ("조식", "중식", "석식"):
-                try:
-                    text = parse(pd.read_html(url, match=i))[self.weekday_number][0]
-                    while text[:2] in ("정식", "특식"):
-                        text = text[2:]
+            if name == "상주생활관":
+                url = "https://dorm.knu.ac.kr/scdorm/_new_ver/newlife/05.php" + str(self.id[name])
+                self.data = list(parse(pd.read_html(url, match=name + " 오늘의 식단"))[1].values())
+            elif name in ("문화관", "첨성관", "누리관"):
+                url = "https://dorm.knu.ac.kr/_new_ver/newlife/05.php?get_mode=" + str(self.id[name])
+                self.data = list(parse(pd.read_html(url, match=name + " 오늘의 식단"))[1].values())
+            else:
+                url = "https://coop.knu.ac.kr/sub03/sub01_01.html?shop_sqno=" + str(self.id[name])
+                self.data = []
 
-                    # Remove nan
-                    if type(text) != str:
-                        raise ValueError
+                for i in ("조식", "중식", "석식"):
+                    try:
+                        text = parse(pd.read_html(url, match=i))[self.weekday_number][0]
+                        while text[:2] in ("정식", "특식"):
+                            text = text[2:]
 
-                    self.data.append(text)
-                except:
-                    self.data.append("없음")
+                        # Remove nan
+                        if type(text) != str:
+                            raise ValueError
+
+                        self.data.append(text)
+                    except:
+                        self.data.append("없음")
+
+            # Save data
+            if force_dump:
+                self.dump()
 
     def __repr__(self):
         return """{}
@@ -69,7 +108,29 @@ class Menu:
 
 점심: {}
 
-저녁: {}""".format(self.name, self.date.strftime('%m월 %d일'), get_weekday(self.weekday_number), self.data[0], self.data[1], self.data[2])
+저녁: {}""".format(self.name, self.date.strftime('%m월 %d일'), get_weekday(self.weekday_number), self.data[0], self.data[1],
+                 self.data[2])
 
     def is_expired(self):
         return self.date.date() < datetime.now().date()
+
+    def load(self):
+        with open(self.json_path) as f:
+            data = json.load(f)
+            return dateutil.parser.parse(data["date"]), data["weekday_number"], data["data"]
+
+    def dumps(self):
+        return {
+            "name": self.name,
+            "date": self.date.isoformat(),
+            "weekday_number": self.weekday_number,
+            "data": self.data
+        }
+
+    def dump(self):
+        with open(self.json_path, 'w') as f:
+            json.dump(self.dumps(), f)
+
+
+# Make the menu directory if it does not exist
+makedir()
