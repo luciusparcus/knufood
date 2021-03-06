@@ -72,6 +72,9 @@ def knufood():
     command = data["userRequest"]["utterance"]
     command_split = command.split()
 
+    # Set command to command[0]
+    cmd = command_split[0]
+
     # If the user specified the day of the week, set the weekday to it
     week = ['월', '화', '수', '목', '금', '토', '일']
     if len(command_split) != 1 and command_split[1] in week:
@@ -80,7 +83,7 @@ def knufood():
         weekday = datetime.now().weekday()
 
     # Synchronise data
-    if menus[command].is_expired():
-        menus[command] = Menu(command)
+    if menus[cmd].is_expired():
+        menus[cmd] = Menu(cmd)
 
-    return create_reply(command, menus[command].show(weekday), menus[command].weekday_number)
+    return create_reply(cmd, menus[cmd].show(weekday), menus[cmd].weekday_number)
