@@ -6,4 +6,3 @@ Notifies the menu of Kyungpook National University cafeterias on KakaoTalk.
 
 ## To-Do
 - 어제/내일 식단표 보기
-- 카페테리아 첨성 지원하기

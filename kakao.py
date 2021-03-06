@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from config import bot_id
-from menu import Menu, get_available_menus
+from menu import Menu, get_available_menus, get_weekday
 
 from flask import Flask, request, jsonify
 app = Flask(__name__)
@@ -30,17 +30,28 @@ t.start()
 print("Timer set to synchronise data every day at 00:00")
 
 
-def create_reply(text):
+def create_reply(text, weekday=datetime.now().weekday()):
+    quick_replies = [
+                        {"label": "월", "action": "message", "messageText": "월"},
+                        {"label": "화", "action": "message", "messageText": "화"},
+                        {"label": "수", "action": "message", "messageText": "수"},
+                        {"label": "목", "action": "message", "messageText": "목"},
+                        {"label": "금", "action": "message", "messageText": "금"},
+                        {"label": "토", "action": "message", "messageText": "토"},
+                        {"label": "일", "action": "message", "messageText": "일"}
+                    ]
+
+    for i in quick_replies:
+        if i["label"] == get_weekday(weekday):
+            quick_replies.remove(i)
+
     return jsonify({
         "version": "2.0",
         "template": {
             "outputs": [
-                {
-                    "simpleText": {
-                        "text": "{}".format(text)
-                    }
-                }
-            ]
+                {"simpleText": {"text": text}}
+            ],
+            "quickReplies": quick_replies
         }
     })
 
@@ -64,4 +75,4 @@ def knufood():
     if menus[command].is_expired():
         menus[command] = Menu(command)
 
-    return create_reply(menus[command])
+    return create_reply(menus[command], menus[command].weekday_number)

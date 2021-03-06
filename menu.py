@@ -43,7 +43,6 @@ def get_available_menus(reload=False):
     }
 
 
-
 class Menu:
     id = {
         "문화관": 2,
@@ -110,7 +109,11 @@ class Menu:
         return self.show()
 
     def show(self, day=datetime.today()):
-        return """{}
+        return """!!요일 선택 기능 개발 중!!
+일부 응답이 불안정하거나 요청이 거부될 수 있습니다. 불편을 드려 죄송합니다.
+(1시간 정도 소요됨)
+
+{}
 {} {}요일
 
 아침: {}
