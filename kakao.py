@@ -75,4 +75,4 @@ def knufood():
     if menus[command].is_expired():
         menus[command] = Menu(command)
 
-    return create_reply(menus[command], menus[command].weekday_number)
+    return create_reply(menus[command].show(), menus[command].weekday_number)

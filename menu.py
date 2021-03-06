@@ -105,9 +105,6 @@ class Menu:
             if force_dump:
                 self.dump()
 
-    def __repr__(self):
-        return self.show()
-
     def show(self, day=datetime.today()):
         return """!!요일 선택 기능 개발 중!!
 일부 응답이 불안정하거나 요청이 거부될 수 있습니다. 불편을 드려 죄송합니다.
