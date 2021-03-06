@@ -8,6 +8,7 @@ if os.getenv("DYNO", None):
     if os.getenv("BOT_ID", None):
         bot_id = os.getenv("BOT_ID")
 else:
-    with open("config.json") as f:
-        data = json.load(f)
-        bot_id = data["botId"]
+    if os.path.isfile("config.json"):
+        with open("config.json") as f:
+            data = json.load(f)
+            bot_id = data["botId"]

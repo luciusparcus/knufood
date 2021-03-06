@@ -15,6 +15,9 @@ def makedir():
     except:
         print("The menu directory already exists.")
 
+# Create menu directory
+makedir()
+
 
 def parse(target):
     return list(target[0].to_dict().values())
@@ -60,7 +63,7 @@ class Menu:
         "공학관학생식당": 86
     }
 
-    def __init__(self, name, force_retrieve=True, force_dump=True):
+    def __init__(self, name, date=datetime.now(), force_retrieve=True, force_dump=True):
         self.name = name
         if type(name) != str:
             raise ValueError
@@ -71,7 +74,7 @@ class Menu:
         if not force_retrieve and os.path.isfile(self.json_path):
             self.date, self.weekday_number, self.data = self.load()
         else:
-            self.date = datetime.now()
+            self.date = date
             self.weekday_number = self.date.weekday()
 
             if name == "상주생활관":
@@ -86,15 +89,20 @@ class Menu:
 
                 for i in ("조식", "중식", "석식"):
                     try:
-                        text = parse(pd.read_html(url, match=i))[self.weekday_number][0]
-                        while text[:2] in ("정식", "특식"):
-                            text = text[2:]
+                        self.data_week = parse(pd.read_html(url, match=i))
+                        data_raw = self.data_week[self.weekday_number]
 
-                        # Remove nan
-                        if type(text) != str:
-                            raise ValueError
+                        for j in data_raw:
+                            text = data_raw[j]
+                            while text[:2] in ("정식", "특식"):
+                                text = text[2:]
 
-                        self.data.append(text)
+                            # Remove nan
+                            if type(text) != str:
+                                raise ValueError
+                            # Remove blank strings
+                            if text.strip():
+                                self.data.append(text)
                     except:
                         self.data.append("없음")
 
@@ -103,15 +111,19 @@ class Menu:
                 self.dump()
 
     def __repr__(self):
+        return self.show()
+
+    def show(self, day=datetime.today()):
         return """{}
-{} {}요일
+        {} {}요일
 
-아침: {}
+        아침: {}
 
-점심: {}
+        점심: {}
 
-저녁: {}""".format(self.name, self.date.strftime('%m월 %d일'), get_weekday(self.weekday_number), self.data[0], self.data[1],
-                 self.data[2])
+        저녁: {}""".format(self.name, self.date.strftime('%m월 %d일'),
+                         get_weekday(self.weekday_number),
+                         self.data[0], self.data[1], self.data[2])
 
     def is_expired(self):
         return self.date.date() < datetime.now().date()
@@ -132,5 +144,3 @@ class Menu:
     def dump(self):
         with open(self.json_path, 'w') as f:
             json.dump(self.dumps(), f)
-
-makedir()

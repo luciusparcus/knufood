@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from config import bot_id
-from menu import Menu, get_available_menus, synchronise_menus,  makedir
+from menu import Menu, get_available_menus, synchronise_menus
 
 from flask import Flask, request, jsonify
 app = Flask(__name__)
@@ -19,6 +19,7 @@ x = datetime.today()
 y = x.replace(day=x.day, hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
 t = Timer((y-x).total_seconds(), synchronise_menus)
 t.start()
+print("Timer set to synchronise data every day at 00:00")
 
 
 def create_reply(text):
