@@ -1,8 +1,8 @@
 bs4
-flask~=1.1.2
+flask
 gunicorn
 html5lib
 numpy
 lxml
-pandas~=1.2.2
-python-dateutil~=2.8.1
+pandas
+python-dateutil
