@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 
 from config import bot_id
-from menu import Menu, get_available_menus, synchronise_menus
+from menu import Menu, get_available_menus, synchronise_menus,  makedir
 
 from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 from datetime import datetime, timedelta
 from threading import Timer
+
+
+# Make the menu directory if it does not exist
+makedir()
 
 print("Loading menus...")
 menus = get_available_menus()

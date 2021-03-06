@@ -130,7 +130,3 @@ class Menu:
     def dump(self):
         with open(self.json_path, 'w') as f:
             json.dump(self.dumps(), f)
-
-
-# Make the menu directory if it does not exist
-makedir()
