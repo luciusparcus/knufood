@@ -84,8 +84,4 @@ def knufood():
         else:
             weekday = datetime.now().weekday()
 
-        # Synchronise data
-        if menus[cmd].is_expired():
-            menus[cmd] = Menu(cmd)
-
         return create_reply(cmd, menus[cmd].show(weekday), weekday)
