@@ -24,7 +24,7 @@ def synchronise_menus():
 
 # Synchronise data every day at 00:00
 x = datetime.today()
-y = x.replace(day=x.day, hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
+y = x.replace(day=x.day, hour=0, minute=1, second=0, microsecond=0) + timedelta(days=1)
 t = Timer((y - x).total_seconds(), synchronise_menus)
 t.start()
 print("Timer set to synchronise data every day at 00:00")
